@@ -1,10 +1,12 @@
 <script setup>
 import NavBar from './components/NavBar.vue'
 import Inputs from './components/Inputs.vue'
+import TextComponent from './components/TextComponent.vue';
+import FooterComponent from './components/FooterComponent.vue';
 import { ref } from 'vue';
 
 let name = "Adrián";
-const age = ref("10");
+const age = ref(10);
 const myId = "welcome-message";
 const myClass = ref("highlighted");
 
@@ -13,8 +15,12 @@ const writeName = function() {
   console.log(name);
 }
 
-const addOneToAge = function() {
-  age.value++;
+const addNumToAge = function(num) {
+  age.value += num;
+}
+
+const displayAlert = function(content) {
+  alert(content);
 }
 </script>
 
@@ -30,9 +36,25 @@ const addOneToAge = function() {
     <p v-else>You are a minor</p>
   </section>
   <button @click="writeName">Write Name</button>
-  <button @click="addOneToAge">Change Age</button>
+  <button @click="addNumToAge(4)">Change Age</button>
 
   <Inputs></Inputs>
+
+  <TextComponent @view-content="displayAlert">
+    <p>This text is passed from App.vue</p>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+  </TextComponent>
+
+  <TextComponent></TextComponent>
+
+  <TextComponent>
+    <p>this goes in the unnamed slot</p>
+    <template v-slot:potato>
+      <p>This goes inside the potato slot</p>
+    </template>
+  </TextComponent>
+
+  <FooterComponent :nameProp="name" :age="age"></FooterComponent>
 </template>
 
 <style>
