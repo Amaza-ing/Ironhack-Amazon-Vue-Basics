@@ -1,42 +1,54 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { usePokemonStore } from "@/stores/pokemonStore"
+import { onMounted, ref } from "vue";
 
-const pokemonList = ref([]);
+const pokemonStore = usePokemonStore();
+
+// const pokemonList = ref([]);
 const selectedPokemon = ref({});
 
-const fetchPokemon = async () => {
-  for (let i = 1; i < 20; i++) {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`)
-    const data = await response.json();
-    pokemonList.value.push(data)
-  }
-}
+// const fetchPokemon = async (total) => {
+//   for (let i = 1; i < total; i++) {
+//     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
+//     const data = await response.json();
+//     pokemonList.value.push(data);
+//   }
+// };
 
 const selectPokemon = (pokemon) => {
   selectedPokemon.value = pokemon;
-}
+};
 
-onMounted(() => {
-    fetchPokemon();
-})
+// onMounted(() => {
+//   pokemonStore.fetchPokemon(50);
+// });
 </script>
 
 <template>
   <h2>Pokedex</h2>
-  <RouterLink :to="{ name: 'home'}">
+  <RouterLink :to="{ name: 'home' }">
     <h3>Go Home</h3>
   </RouterLink>
 
-  <section v-if="selectedPokemon.name" class="selected-pokemon">
-    <p>{{ selectedPokemon.name }}</p>
-    <img :src="selectedPokemon.sprites.front_default" width="200">
+  <section v-if="selectedPokemon.name">
+    <RouterLink
+      :to="{ name: 'pokemon', params: { pokemon: selectedPokemon.id } }"
+      class="selected-pokemon"
+    >
+      <p>{{ selectedPokemon.name }}</p>
+      <img :src="selectedPokemon.sprites.front_default" width="200" />
+    </RouterLink>
   </section>
 
   <ul class="pokedex">
-    <li v-for="pokemon in pokemonList" class="pokemon-card" @click="selectPokemon(pokemon)">
+    <li
+      v-for="pokemon in pokemonStore.pokemonList"
+      class="pokemon-card"
+      @click="selectPokemon(pokemon)"
+    >
       <p class="pokemon-name">{{ pokemon.name }}</p>
-      <img :src="pokemon.sprites.front_default">
-      <p>{{ pokemon.weight }}</p>      
+      <img :src="pokemon.sprites.front_default" />
+      <p>{{ pokemon.weight }}</p>
     </li>
   </ul>
 </template>
@@ -53,6 +65,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-size: 40px;
+  text-decoration: none;
 }
 
 .pokedex {
@@ -90,7 +103,6 @@ onMounted(() => {
 
 .pokemon-card:hover .pokemon-name {
   background-color: green;
-  color: white
+  color: white;
 }
-
 </style>
